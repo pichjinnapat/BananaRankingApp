@@ -1,39 +1,38 @@
-import { useState } from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { useRef, useState } from 'react';
+import { View, Text } from 'react-native';
 import StyledTextInput from './StyledTextInput';
 import StyledButton from './StyledButton';
+import styled from 'styled-components/native';
 
 const SearchBar = ({ onSearch }: { onSearch: (username: string) => void }) => {
   const [username, setUsername] = useState('');
 
   return (
-    <View style={styles.container}>
+    <Container>
       <StyledTextInput
         onChangeText={setUsername}
         value={username}
         placeholder='Enter Username'
       />
       <StyledButton onPress={() => onSearch(username)}>
-        <Text>Click Here</Text>
+        <StyledText>Search</StyledText>
       </StyledButton>
-    </View>
+    </Container>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 10,
-  },
-  input: {
-    flex: 1,
-    marginRight: 10,
-    borderWidth: 1,
-    padding: 8,
-    borderColor: 'gray',
-  },
-});
+const Container = styled(View)`
+  width: 100%;
+  column-gap: 10px;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+`;
+
+const StyledText = styled(Text)`
+  color: #fff;
+  text-align: center;
+`;
 
 export default SearchBar;

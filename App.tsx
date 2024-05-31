@@ -5,8 +5,6 @@ import SearchBar from './components/SearchBar';
 import UserList from './components/UserList';
 import { useDispatch } from './utils/hooks/useDispatch';
 import { StyleSheet, View } from 'react-native';
-import { AppState, User } from './store/types';
-import { useSelector } from 'react-redux';
 
 const App = () => {
   const [searchedUsername, setSearchedUsername] = useState('');
@@ -68,6 +66,7 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     paddingHorizontal: 10,
     width: '100%',
+    backgroundColor: '#F6F6F6',
   },
 });
 
