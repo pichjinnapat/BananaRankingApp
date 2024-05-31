@@ -25,7 +25,7 @@ const StyledInput = styled(TextInput)`
 const StyledTextInput = (props: StyledTextInputProps) => {
   return (
     <Container>
-      <SearchIcon style={{ position: 'absolute', top: 18, left: 10 }} />
+      {/* <SearchIcon style={{ position: 'absolute', top: 18, left: 10 }} /> */}
       <StyledInput {...props} />
     </Container>
   );

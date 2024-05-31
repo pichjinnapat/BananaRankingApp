@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { View, Text } from 'react-native';
 import StyledTextInput from './StyledTextInput';
 import StyledButton from './StyledButton';

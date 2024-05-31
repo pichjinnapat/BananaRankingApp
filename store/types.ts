@@ -1,6 +1,6 @@
 import { List } from 'immutable';
 
-export interface User {
+export type User = {
   bananas: number;
   lastDayPlayed: string;
   longestStreak: number;
@@ -9,16 +9,16 @@ export interface User {
   subscribed: boolean;
   uid: string;
   index?: number;
-}
+};
 
-export interface AppState {
+export type AppState = {
   sortedUsers: List<User>;
   listUsers: List<User>;
-}
+};
 
-export interface SetUsersAction {
+export type SetUsersAction = {
   type: 'SET_USERS';
   payload: User[];
-}
+};
 
 export type UserAction = SetUsersAction;
