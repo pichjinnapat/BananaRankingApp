@@ -1,7 +1,5 @@
-import { FC } from 'react';
-import { TextInput, View, TextInputProps } from 'react-native';
+import { TextInput, View, TextInputProps, Image } from 'react-native';
 import styled from 'styled-components/native';
-import SearchIcon from '../assets/icons/SearchIcon';
 
 type StyledTextInputProps = TextInputProps;
 
@@ -25,7 +23,10 @@ const StyledInput = styled(TextInput)`
 const StyledTextInput = (props: StyledTextInputProps) => {
   return (
     <Container>
-      {/* <SearchIcon style={{ position: 'absolute', top: 18, left: 10 }} /> */}
+      <Image
+        source={require('../assets/search-icon.png')}
+        style={{ position: 'absolute', top: 18, left: 10 }}
+      />
       <StyledInput {...props} />
     </Container>
   );
