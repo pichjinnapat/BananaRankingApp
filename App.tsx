@@ -29,21 +29,12 @@ const App = () => {
         return;
       }
 
-      const searchedUserIndex = sortedUsers.indexOf(searchedUser);
-
       let topUsers = [...sortedUsers].slice(0, 10);
 
       if (!topUsers.find((user) => user.name.toLowerCase() === username.toLowerCase())) {
         topUsers.pop();
-        topUsers.push({ ...searchedUser, index: searchedUserIndex + 1 });
+        topUsers.push(searchedUser);
         topUsers = topUsers.sort((a, b) => b.bananas - a.bananas);
-
-        topUsers = topUsers.map((user, index) => ({
-          ...user,
-          index: user.index ?? index + 1,
-        }));
-      } else {
-        topUsers = topUsers.map((user, index) => ({ ...user, index: index + 1 }));
       }
 
       dispatch({ type: 'SET_USERS', payload: [...topUsers] });
@@ -57,6 +48,8 @@ const App = () => {
       .sort((a, b) => {
         if (type === 'banana') {
           return direction === 'asc' ? a.bananas - b.bananas : b.bananas - a.bananas;
+        } else if (type === 'rank') {
+          return direction === 'asc' ? a?.index! - b?.index! : b?.index! - a?.index!;
         }
         return direction === 'asc'
           ? a.name.localeCompare(b.name)
