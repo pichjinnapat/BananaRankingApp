@@ -7,10 +7,17 @@ import styled from 'styled-components/native';
 const SearchBar = ({ onSearch }: { onSearch: (username: string) => void }) => {
   const [username, setUsername] = useState('');
 
+  const handleTextChange = (text: string) => {
+    if (text.length <= 0) {
+      onSearch('');
+    }
+    setUsername(text);
+  };
+
   return (
     <Container>
       <StyledTextInput
-        onChangeText={setUsername}
+        onChangeText={handleTextChange}
         value={username}
         placeholder='Enter Username'
       />

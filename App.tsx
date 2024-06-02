@@ -4,11 +4,15 @@ import { store } from './store';
 import SearchBar from './components/SearchBar';
 import UserList from './components/UserList';
 import { useDispatch } from './utils/hooks/useDispatch';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { SortDirection, SortType } from './types';
+import { fuzzySearch } from './utils/fuzzySearch';
+import StyledSwitch from './components/StyledSwitch';
+import styled from 'styled-components/native';
 
 const App = () => {
   const [searchedUsername, setSearchedUsername] = useState('');
+  const [isFuzzySearch, setIsFuzzySearch] = useState(false);
   const [sort, setSort] = useState<{
     type: SortType;
     direction: SortDirection;
@@ -20,30 +24,51 @@ const App = () => {
     setSearchedUsername(username);
 
     try {
-      const searchedUser = sortedUsers.find(
-        (user) => user.name.toLowerCase() === username.toLowerCase(),
-      );
+      if (isFuzzySearch) {
+        const matchedUsers = fuzzySearch(username, [...sortedUsers]);
 
-      if (!searchedUser) {
-        alert('This user name does not exist! Please specify an existing user name!');
-        return;
+        if (matchedUsers.length === 0) {
+          alert('This user name does not exist! Please specify an existing user name!');
+          return;
+        }
+
+        const topUsers = matchedUsers.slice(0, 10);
+        dispatch({ type: 'SET_USERS', payload: [...topUsers] });
+      } else {
+        const searchedUser = sortedUsers.find(
+          (user) => user.name.toLowerCase() === username.toLowerCase(),
+        );
+
+        if (!searchedUser) {
+          alert('This user name does not exist! Please specify an existing user name!');
+          return;
+        }
+
+        let topUsers = [...sortedUsers].slice(0, 10);
+
+        if (
+          !topUsers.find((user) => user.name.toLowerCase() === username.toLowerCase()) &&
+          !!username
+        ) {
+          topUsers.pop();
+          topUsers.push(searchedUser);
+          topUsers = topUsers.sort((a, b) => b.bananas - a.bananas);
+        }
+
+        dispatch({ type: 'SET_USERS', payload: [...topUsers] });
       }
-
-      let topUsers = [...sortedUsers].slice(0, 10);
-
-      if (!topUsers.find((user) => user.name.toLowerCase() === username.toLowerCase())) {
-        topUsers.pop();
-        topUsers.push(searchedUser);
-        topUsers = topUsers.sort((a, b) => b.bananas - a.bananas);
-      }
-
-      dispatch({ type: 'SET_USERS', payload: [...topUsers] });
     } catch (error) {
       console.error('Error handling user data:', error);
     }
   };
 
+  const handleSetFuzzySearch = (val: boolean) => {
+    setIsFuzzySearch(val);
+    dispatch({ type: 'SET_USERS', payload: [...sortedUsers].slice(0, 10) });
+  };
+
   const handleSort = (type: SortType, direction: SortDirection) => {
+    setSort({ type, direction });
     const sorted = [...sortedUsers]
       .sort((a, b) => {
         if (type === 'banana') {
@@ -62,25 +87,37 @@ const App = () => {
 
   return (
     <Provider store={store}>
-      <View style={styles.container}>
+      <Container>
+        <SwitchContainer>
+          <Text style={{ marginRight: 5 }}>Fuzzy Search</Text>
+          <StyledSwitch value={isFuzzySearch} onValueChange={handleSetFuzzySearch} />
+        </SwitchContainer>
         <SearchBar onSearch={handleSearch} />
         <UserList searchedUsername={searchedUsername} onSort={handleSort} sort={sort} />
-      </View>
+      </Container>
     </Provider>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingTop: 60,
-    paddingBottom: 20,
-    paddingHorizontal: 10,
-    width: '100%',
-    backgroundColor: '#F6F6F6',
-  },
-});
+const Container = styled(View)`
+  flex: 1;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  padding-top: 60px;
+  padding-bottom: 20px;
+  padding-right: 10px;
+  padding-left: 10px;
+  background-color: #f6f6f6;
+`;
+
+const SwitchContainer = styled(View)`
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+  margin-top: 10px;
+  margin-bottom: 10px;
+`;
 
 export default App;

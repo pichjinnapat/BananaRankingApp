@@ -55,12 +55,18 @@ const UserList: FC<UserListProps> = ({ searchedUsername, onSort, sort }) => {
       ) : (
         <>
           <HeaderContainer>
-            <Pressable style={{ width: '20%' }} onPress={handleSort('rank')}>
+            <Pressable
+              style={{ width: '20%', borderRightWidth: 1 }}
+              onPress={handleSort('rank')}
+            >
               <StyledText>
                 Rank {sort.type === 'rank' && (sort.direction === 'asc' ? '⬆️' : '⬇️')}
               </StyledText>
             </Pressable>
-            <Pressable style={{ width: '40%' }} onPress={handleSort('name')}>
+            <Pressable
+              style={{ width: '40%', borderRightWidth: 1 }}
+              onPress={handleSort('name')}
+            >
               <StyledText>
                 Name {sort.type === 'name' && (sort.direction === 'asc' ? '⬆️' : '⬇️')}
               </StyledText>
