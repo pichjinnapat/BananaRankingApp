@@ -1,29 +1,18 @@
-import { FC, useEffect } from 'react';
-import { View, Text, FlatList, Alert, Pressable } from 'react-native';
+import { View, Text, FlatList, Pressable } from 'react-native';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components/native';
 import { User } from '../../store/types';
 import UserItem from './UserItem';
 import { RootState } from '../../store';
 import { SortDirection, SortType } from '../../types';
+import { useDispatch } from '../../utils/hooks/useDispatch';
 
-type UserListProps = {
-  searchedUsername: string;
-  onSort: (type: SortType, direction: SortDirection) => void;
-  sort: { type: SortType; direction: SortDirection };
-};
-
-const UserList: FC<UserListProps> = ({ searchedUsername, onSort, sort }) => {
+const UserList = () => {
+  const sortedUsers = useSelector((state: RootState) => state.sortedUsers);
   const users = useSelector((state: RootState) => state.listUsers);
-
-  useEffect(() => {
-    if (searchedUsername && !users.find((u) => u.name === searchedUsername)) {
-      Alert.alert(
-        'Error',
-        'This user name does not exist! Please specify an existing user name!',
-      );
-    }
-  }, [searchedUsername, users]);
+  const searchedUsername = useSelector((state: RootState) => state.username);
+  const sort = useSelector((state: RootState) => state.sort);
+  const dispatch = useDispatch();
 
   const renderItem = ({ item, index }: { item: User; index: number }) => (
     <UserItem
@@ -33,19 +22,38 @@ const UserList: FC<UserListProps> = ({ searchedUsername, onSort, sort }) => {
     />
   );
 
-  const handleSort = (type: SortType) => () => {
+  const handleSortChange = (type: SortType) => () => {
+    let newSort = { type, direction: 'asc' };
     if (sort.type === type) {
       if (sort.direction === 'asc') {
-        sort.direction = 'desc';
+        newSort.direction = 'desc';
       } else {
-        sort.direction = 'asc';
+        newSort.direction = 'asc';
       }
     } else {
-      sort.type = type;
-      sort.direction = 'desc';
+      newSort.type = type;
+      newSort.direction = 'desc';
     }
 
-    onSort(sort.type, sort.direction);
+    setSortedUsers(newSort.type, newSort.direction as SortDirection);
+  };
+
+  const setSortedUsers = (type: SortType, direction: SortDirection) => {
+    dispatch({ type: 'SET_SORT', payload: { type, direction } });
+    const sorted = [...sortedUsers]
+      .sort((a, b) => {
+        if (type === 'banana') {
+          return direction === 'asc' ? a.bananas - b.bananas : b.bananas - a.bananas;
+        } else if (type === 'rank') {
+          return direction === 'asc' ? a?.index! - b?.index! : b?.index! - a?.index!;
+        }
+        return direction === 'asc'
+          ? a.name.localeCompare(b.name)
+          : b.name.localeCompare(a.name);
+      })
+      .slice(0, 10);
+
+    dispatch({ type: 'SET_USERS', payload: sorted });
   };
 
   return (
@@ -56,24 +64,39 @@ const UserList: FC<UserListProps> = ({ searchedUsername, onSort, sort }) => {
         <>
           <HeaderContainer>
             <Pressable
-              style={{ width: '20%', borderRightWidth: 1 }}
-              onPress={handleSort('rank')}
+              style={{
+                width: '20%',
+                borderRightWidth: 1,
+                flexDirection: 'column',
+                alignItems: 'center',
+              }}
+              onPress={handleSortChange('rank')}
             >
+              <StyledText>Rank</StyledText>
               <StyledText>
-                Rank {sort.type === 'rank' && (sort.direction === 'asc' ? '⬆️' : '⬇️')}
+                {sort.type === 'rank' && (sort.direction === 'asc' ? '⬆️' : '⬇️')}
               </StyledText>
             </Pressable>
             <Pressable
-              style={{ width: '40%', borderRightWidth: 1 }}
-              onPress={handleSort('name')}
+              style={{
+                width: '40%',
+                borderRightWidth: 1,
+                flexDirection: 'column',
+                alignItems: 'center',
+              }}
+              onPress={handleSortChange('name')}
             >
+              <StyledText>Name</StyledText>
               <StyledText>
-                Name {sort.type === 'name' && (sort.direction === 'asc' ? '⬆️' : '⬇️')}
+                {sort.type === 'name' && (sort.direction === 'asc' ? '⬆️' : '⬇️')}
               </StyledText>
             </Pressable>
-            <Pressable style={{ width: '40%' }} onPress={handleSort('banana')}>
+            <Pressable
+              style={{ width: '40%', flexDirection: 'column', alignItems: 'center' }}
+              onPress={handleSortChange('banana')}
+            >
+              <StyledText>Number of 🍌</StyledText>
               <StyledText>
-                Number of 🍌{' '}
                 {sort.type === 'banana' && (sort.direction === 'asc' ? '⬆️' : '⬇️')}
               </StyledText>
             </Pressable>

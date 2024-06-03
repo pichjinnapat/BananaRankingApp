@@ -44,14 +44,14 @@ const UserItem: React.FC<UserItemProps> = ({ user, highlight, index }) => (
 );
 
 const StyledText = styled(Text)`
-  font-size: 16;
+  font-size: 16px;
   font-weight: bold;
   text-align: center;
 `;
 
 const StyledUserItem = styled(View)`
   padding: 20px;
-  border-width: 1;
+  border-width: 1px;
   border-color: #e8e8e8;
   flex-direction: row;
   background-color: white;
@@ -59,7 +59,7 @@ const StyledUserItem = styled(View)`
 
 const StyledHighlightUserItem = styled(View)`
   padding: 20px;
-  border-width: 1;
+  border-width: 1px;
   border-color: #e8e8e8;
   flex-direction: row;
   background-color: #3e4b7b;

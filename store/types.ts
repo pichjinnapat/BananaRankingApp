@@ -1,4 +1,5 @@
 import { List } from 'immutable';
+import { SortDirection, SortType } from '../types';
 
 export type User = {
   bananas: number;
@@ -14,6 +15,9 @@ export type User = {
 export type AppState = {
   sortedUsers: List<User>;
   listUsers: List<User>;
+  username: string;
+  isFuzzySearch: boolean;
+  sort: { type: SortType; direction: SortDirection };
 };
 
 export type SetUsersAction = {
@@ -21,4 +25,23 @@ export type SetUsersAction = {
   payload: User[];
 };
 
-export type UserAction = SetUsersAction;
+export type SetUsernameAction = {
+  type: 'SET_USERNAME';
+  payload: string;
+};
+
+export type SetFuzzySearchAction = {
+  type: 'SET_FUZZY_SEARCH';
+  payload: boolean;
+};
+
+export type SetSortAction = {
+  type: 'SET_SORT';
+  payload: { type: SortType; direction: SortDirection };
+};
+
+export type Action =
+  | SetUsersAction
+  | SetUsernameAction
+  | SetFuzzySearchAction
+  | SetSortAction;
