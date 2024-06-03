@@ -1,11 +1,11 @@
 import { View, Text, FlatList, Pressable } from 'react-native';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components/native';
 import { User } from '../../store/types';
 import UserItem from './UserItem';
 import { RootState } from '../../store';
 import { SortDirection, SortType } from '../../types';
-import { useDispatch } from '../../utils/hooks/useDispatch';
+import { setSort, setUsers } from '../../store/actions';
 
 const UserList = () => {
   const sortedUsers = useSelector((state: RootState) => state.sortedUsers);
@@ -39,7 +39,7 @@ const UserList = () => {
   };
 
   const setSortedUsers = (type: SortType, direction: SortDirection) => {
-    dispatch({ type: 'SET_SORT', payload: { type, direction } });
+    dispatch(setSort({ type, direction }));
     const sorted = [...sortedUsers]
       .sort((a, b) => {
         if (type === 'banana') {
@@ -53,7 +53,7 @@ const UserList = () => {
       })
       .slice(0, 10);
 
-    dispatch({ type: 'SET_USERS', payload: sorted });
+    dispatch(setUsers(sorted));
   };
 
   return (

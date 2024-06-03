@@ -5,16 +5,17 @@ import { useDispatch } from 'react-redux';
 import { initialState } from '../store/reducer';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store';
+import { setFuzzySearch, setSort, setUsername, setUsers } from '../store/actions';
 
 const FuzzySearchToggle = () => {
   const dispatch = useDispatch();
   const isFuzzySearch = useSelector((state: RootState) => state.isFuzzySearch);
 
   const handleSetFuzzySearch = (val: boolean) => {
-    dispatch({ type: 'SET_FUZZY_SEARCH', payload: val });
-    dispatch({ type: 'SET_SORT', payload: initialState.sort });
-    dispatch({ type: 'SET_USERS', payload: [...initialState.listUsers] });
-    dispatch({ type: 'SET_USERNAME', payload: '' });
+    dispatch(setFuzzySearch(val));
+    dispatch(setSort(initialState.sort));
+    dispatch(setUsers([...initialState.listUsers]));
+    dispatch(setUsername(''));
   };
 
   return (
